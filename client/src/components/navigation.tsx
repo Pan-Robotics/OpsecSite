@@ -58,8 +58,8 @@ export default function Navigation() {
                 >
                   Resources
                 </button>
-                <Button className="bg-cyber-gold hover:bg-cyber-gold-dark text-cyber-dark font-semibold shadow-none">
-                  Launch APP
+                <Button asChild className="bg-cyber-gold hover:bg-cyber-gold-dark text-cyber-dark font-semibold shadow-none">
+                  <a href="https://apps.cryptoopsec.com">Launch Apps</a>
                 </Button>
               </div>
             </div>
@@ -109,6 +109,15 @@ export default function Navigation() {
                 >
                   Resources
                 </button>
+                <a
+                  href="https://apps.cryptoopsec.com"
+                  className="block px-3 pt-2"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <Button className="w-full bg-cyber-gold hover:bg-cyber-gold-dark text-cyber-dark font-semibold shadow-none">
+                    Launch Apps
+                  </Button>
+                </a>
               </div>
             </div>
           )}

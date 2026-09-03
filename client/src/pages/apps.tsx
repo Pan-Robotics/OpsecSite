@@ -3,6 +3,7 @@ import type { LucideIcon } from "lucide-react";
 import {
   Compass,
   BarChart3,
+  ArrowLeftRight,
   ExternalLink,
   Search,
   ArrowLeft,
@@ -43,6 +44,24 @@ const APPS: AppDef[] = [
       "Token screener",
       "Portfolio & barbell tools",
       "Agent-callable (MCP)",
+    ],
+  },
+  {
+    id: "bridge",
+    name: "Bridge",
+    tagline: "Legacy OP token withdrawals",
+    description:
+      "Withdraw legacy OP Mainnet tokens (pre-Bedrock, invisible to Superbridge) to Ethereum through the canonical bridge. Resolve the token, verify its L1 route and escrow, withdraw, then prove and finalize from any wallet. Client-side only: no backend, no custody, no fees.",
+    icon: ArrowLeftRight,
+    status: "live",
+    url: "https://bridge.cryptoopsec.com",
+    category: "Bridge",
+    features: [
+      "Canonical OP bridge",
+      "Legacy token resolver",
+      "Escrow & safety checks",
+      "Prove & finalize tracker",
+      "No custody, no fees",
     ],
   },
   {

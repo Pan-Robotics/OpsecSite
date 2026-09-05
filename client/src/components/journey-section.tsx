@@ -197,7 +197,7 @@ export default function JourneySection() {
                 </div>
 
                 <Button asChild className="bg-cyber-gold hover:bg-cyber-gold-dark text-cyber-dark font-semibold shadow-none">
-                  <a href="/downloads/CrytoOPSEC_Cold_Wallet_Guide.pdf" download>
+                  <a href="/downloads/CryptoOPSEC_Cold_Wallet_Guide.pdf" download>
                     <Download className="w-4 h-4 mr-2" />
                     Download Cold Storage Setup Guide
                   </a>

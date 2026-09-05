@@ -68,7 +68,7 @@ export default function Footer() {
                 <button
                   className="text-start text-gray-300 hover:text-cyber-gold transition-colors duration-200"
                 >
-                  <a href="/downloads/CrytoOPSEC_Cold_Wallet_Guide.pdf" download>
+                  <a href="/downloads/CryptoOPSEC_Cold_Wallet_Guide.pdf" download>
                     Cold Storage Setup Guide
                   </a>
                 </button>

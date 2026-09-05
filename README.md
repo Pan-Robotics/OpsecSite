@@ -64,14 +64,14 @@ Eight PDFs in `public/downloads/`, served at `/downloads/<filename>`:
 | `CryptoOPSEC_Crypto_Fundamentals_Guide.pdf` | 41 KB | Foundations, Footer |
 | `CryptoOPSEC_Crypto_Exchange_Security_Checklist.pdf` | 42 KB | Journey step 1, Footer |
 | `CryptoOPSEC_Hot_Wallet_Guide.pdf` | 43 KB | Journey step 2, Footer |
-| `CrytoOPSEC_Cold_Wallet_Guide.pdf` | 41 KB | Journey step 3, Footer |
+| `CryptoOPSEC_Cold_Wallet_Guide.pdf` | 41 KB | Journey step 3, Footer |
 | `CryptoOPSEC_Crypto_Scam_Cheat_Sheet.pdf` | 42 KB | Journey step 4, Footer |
 | `CryptoOPSEC_50_Point_Security_Checklist.pdf` | 38 KB | Resources, Footer |
 | `CryptoOPSEC_Scam_Detection_Guide.pdf` | 47 KB | Resources, Footer |
 
-> `CrytoOPSEC_Cold_Wallet_Guide.pdf` is misspelled ("Cryto") **in the filename
-> itself**, and both `journey-section.tsx` and `footer.tsx` link to that spelling.
-> Renaming it means updating both call sites in the same commit or the download 404s.
+Rows are in the order the guides appear on the page. Express serves these paths
+literally, so a filename and its `href` must match character for character —
+there is no fallback and a mismatch is a silent 404 behind the SPA catch-all.
 
 ---
 
@@ -97,13 +97,33 @@ What is actually in use — the dependency tree was pruned to match in `98cd0c2`
 `47 75% 45%`, `cyber-gold-dark` `45 70% 38%`. Type is **Orbitron** for headings,
 **Inter** for body, **JetBrains Mono** for accents, all from Google Fonts.
 
-### Scaffold remnants still present
+### Scaffold remnants still present — there is no database
 
 The project started from a Replit `rest-express` template and the backend was
-never built out. `server/routes.ts` registers **zero** `/api` routes,
-`server/storage.ts` is an unused in-memory store, and `shared/schema.ts` defines
-a `users` table that nothing reads or writes. `drizzle-orm` and `drizzle-kit`
-are present only for that unused schema.
+never built out. **This site has no database and stores nothing.** It is static
+content plus outbound links.
+
+The database plumbing is vestigial and disconnected end to end:
+
+| Piece | State |
+|---|---|
+| `shared/schema.ts` | Defines a Drizzle `pgTable` `users` (id, username, **plaintext `password`**) |
+| `server/storage.ts` | Imports that schema, then ignores it — `MemStorage` is an in-memory `Map` |
+| `server/routes.ts` | Imports `storage`; the only mention is a code comment. Zero routes registered |
+| `drizzle.config.ts` | The sole thing that would connect. Throws immediately without `DATABASE_URL` |
+| `migrations/` | Does not exist — `npm run db:push` has never run successfully |
+| `DATABASE_URL` | Set nowhere: no `.env` locally or on the VPS, nothing in the pm2 environment |
+| Postgres | Nothing listening on the VPS; no Neon/Postgres service configured |
+
+So the chain terminates before it begins: the schema feeds an in-memory store
+that no route calls, and no route exists. `drizzle-orm` and `drizzle-kit` are
+dependencies only because that unused schema imports them. The Neon serverless
+driver was already removed in `98cd0c2` — nothing referenced it.
+
+**Before wiring up any of it:** `MemStorage` keeps users in a `Map` that
+vanishes on every restart, and both it and the schema treat `password` as plain
+text. Delete this scaffold or add real persistence and hashing first — it is the
+obvious thing to reach for and the wrong thing to ship.
 
 ---
 
@@ -251,9 +271,10 @@ Tracked here rather than hidden. None of these break the live site today.
   imports `wmremove-transformed.png`); `cryptogold` is imported but never used;
   and `toolkit-section.tsx` imports `Rocket` without using it. The `@assets`
   alias is likewise defined but unused.
-- **`shared/schema.ts` stores passwords in plaintext.** Unused today, but it is
-  the obvious thing to reach for when auth is added — delete it or add hashing
-  first.
+- **The auth/database scaffold is a trap, not a feature.** See
+  [Scaffold remnants](#scaffold-remnants-still-present--there-is-no-database) —
+  plaintext passwords, an in-memory store that empties on restart, and no
+  database behind any of it.
 - **No `LICENSE` file.** `package.json` declares MIT and this README previously
   linked `./LICENSE`, which does not exist.
 

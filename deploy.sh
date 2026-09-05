@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+#
+# deploy.sh — safe deploy for the OpsecSite app (cryptoopsec.com)
+#
+# Why this exists: dist/ and package-lock.json are tracked in git but get
+# regenerated on every build, so the working tree drifts and a plain
+# `git pull` can conflict. This script discards those regenerated artifacts,
+# fast-forwards to origin/main, then rebuilds them fresh — so deploys are
+# always clean and reproducible. Idempotent; safe to re-run.
+#
+# Usage:
+#   cd /root/OpsecSite && ./deploy.sh            # full deploy
+#   cd /root/OpsecSite && ./deploy.sh --dry-run  # print plan, change nothing
+#
+set -euo pipefail
+
+APP_DIR=/root/OpsecSite
+PM2_NAME=OpsecSite
+BRANCH=main
+HEALTH_URL=https://cryptoopsec.com
+
+log(){ echo "[deploy $(date -u +%H:%M:%S)] $*"; }
+
+if [ "${1:-}" = "--dry-run" ]; then
+  cat <<PLAN
+[deploy] DRY RUN — would perform, in $APP_DIR:
+  1. git fetch --prune origin
+  2. git checkout -- dist package-lock.json   (discard regenerated artifacts)
+  3. stash any OTHER uncommitted changes (recoverable)
+  4. git merge --ff-only origin/$BRANCH
+  5. npm ci --no-audit --no-fund
+  6. npm run build
+  7. pm2 restart $PM2_NAME --update-env && pm2 save
+  8. curl $HEALTH_URL  (expect HTTP 200)
+PLAN
+  exit 0
+fi
+
+cd "$APP_DIR"
+log "current commit: $(git rev-parse --short HEAD)"
+log "fetching origin/$BRANCH"
+git fetch --prune origin
+
+# Discard local changes to regenerated build artifacts so the merge is clean.
+log "resetting tracked build artifacts (dist/, package-lock.json) — rebuilt below"
+git checkout -- dist package-lock.json 2>/dev/null || true
+
+# Anything ELSE uncommitted gets stashed (not lost) rather than blocking the deploy.
+if ! git diff --quiet || ! git diff --cached --quiet; then
+  log "stashing unexpected local changes (recover with: git stash list / git stash pop)"
+  git stash push -u -m "deploy-autostash-$(date -u +%Y%m%dT%H%M%SZ)"
+fi
+
+# Fast-forward only: never creates a merge commit, fails loudly if history diverged.
+git merge --ff-only "origin/$BRANCH"
+log "updated to commit: $(git rev-parse --short HEAD)"
+
+# Old app keeps serving until the pm2 restart below; if install/build fails, set -e
+# aborts before the restart and the running process is untouched.
+log "npm ci (reproducible install from lockfile)"
+npm ci --no-audit --no-fund
+log "npm run build (vite + esbuild -> dist/index.js)"
+npm run build
+
+log "pm2 restart $PM2_NAME"
+pm2 restart "$PM2_NAME" --update-env
+pm2 save
+
+sleep 2
+code=$(curl -sS -o /dev/null -w '%{http_code}' "$HEALTH_URL" || echo 000)
+log "health check $HEALTH_URL -> $code"
+if [ "$code" = "200" ]; then
+  log "SUCCESS @ $(git rev-parse --short HEAD)"
+else
+  log "WARNING: site not returning 200 — check: pm2 logs $PM2_NAME --lines 50"
+  exit 1
+fi

@@ -7,6 +7,13 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// The Cold Wallet Guide was renamed CrytoOPSEC -> CryptoOPSEC. Without this the
+// SPA catch-all below answers 200 text/html for the old URL, so a bookmarked or
+// search-indexed link silently "downloads" the homepage instead of 404ing.
+app.get("/downloads/CrytoOPSEC_Cold_Wallet_Guide.pdf", (_req, res) => {
+  res.redirect(301, "/downloads/CryptoOPSEC_Cold_Wallet_Guide.pdf");
+});
+
 // Serve PDF downloads
 app.use('/downloads', express.static(path.join(process.cwd(), 'public/downloads')));
 

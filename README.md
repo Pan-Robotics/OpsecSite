@@ -156,7 +156,7 @@ server/
   vite.ts             dev middleware + production static serving
 public/downloads/     the 8 PDFs (served by Express, NOT bundled by Vite)
 attached_assets/      images used by journey-section; also 8 unreferenced PDFs
-dist/                 build output (tracked, but regenerated on every deploy)
+dist/                 build output — gitignored, regenerated on every deploy
 deploy.sh             production deploy script
 ```
 
@@ -209,7 +209,7 @@ cd /root/OpsecSite && ./deploy.sh            # full deploy
 cd /root/OpsecSite && ./deploy.sh --dry-run  # print the plan, change nothing
 ```
 
-It runs: `git fetch` → discard local `dist/` and `package-lock.json` → autostash
+It runs: `git fetch` → discard the local `package-lock.json` → autostash
 anything else → `git merge --ff-only origin/main` → `npm ci` → `npm run build` →
 `pm2 restart OpsecSite && pm2 save` → curl the health endpoint and require 200.
 
@@ -225,9 +225,11 @@ Two properties of the script worth knowing before you change dependencies:
   disagree. Always change dependencies with `npm install` / `npm uninstall`
   (which update both), never by hand-editing `package.json`.
 
-`dist/` is tracked in git but deliberately never committed — history is
-source-only, and the script discards and rebuilds `dist/` on every deploy.
-Expect a permanently dirty `dist/` in `git status`; that is normal.
+`dist/` is **gitignored and not tracked** — it is pure build output, regenerated
+by `npm run build` on every deploy. It used to be tracked-but-never-committed,
+which left `git status` permanently dirty with six entries after any build; that
+was the whole reason `deploy.sh` had to `git checkout -- dist` first. History is
+source-only, so a clean `git status` after building is now the expected state.
 
 **If a commit ever modifies `deploy.sh` itself**, do not run `./deploy.sh` to
 deploy it. Bash reads scripts incrementally by byte offset, so overwriting the

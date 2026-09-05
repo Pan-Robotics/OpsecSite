@@ -239,14 +239,12 @@ Tracked here rather than hidden. None of these break the live site today.
   no carve-out, so `/api/nonexistent` returns `200 text/html`. Any future API
   client hitting a wrong or removed endpoint gets a silent success, an
   `/api/health` probe would be a false positive, and the soft-404s are indexable.
-- **`client/index.html` still loads `https://replit.com/public/js/replit-dev-banner.js`**
-  in production — a third-party script from the original template, shipping to
-  every visitor of a site whose subject is operational security. It should be
-  removed or made dev-only.
 - **Third-party hotlinks in the page body.** `tools-section.tsx` uses a
   `mkt-site-asset.crypto.com` WebP as a background image, `intro-section.tsx` an
   Unsplash photo, and Journey step 4 an iconscout illustration. All three break
-  or change without notice and none are under this project's control.
+  or change without notice and none are under this project's control. The built
+  `index.html` also pulls fonts from Google. These are now the only external
+  requests the page makes.
 - **Dead weight in `attached_assets/`:** its 8 PDFs are an *identical duplicate
   set* of `public/downloads/` and nothing references them; `images/exchanging.png`
   is unused (the `exchangingimg` variable in `journey-section.tsx` actually

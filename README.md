@@ -71,7 +71,14 @@ Eight PDFs in `public/downloads/`, served at `/downloads/<filename>`:
 
 Rows are in the order the guides appear on the page. Express serves these paths
 literally, so a filename and its `href` must match character for character —
-there is no fallback and a mismatch is a silent 404 behind the SPA catch-all.
+there is no fallback, and a mismatch silently returns the homepage HTML behind
+the SPA catch-all rather than a 404.
+
+The Cold Wallet Guide was originally published misspelled as
+`CrytoOPSEC_Cold_Wallet_Guide.pdf`. It was renamed, and `server/index.ts` keeps a
+`301` from the old path to the new one so bookmarks and search-indexed links
+still resolve. If you rename a download again, add the matching redirect — the
+catch-all will otherwise hide the breakage behind a `200`.
 
 ---
 
@@ -97,33 +104,39 @@ What is actually in use — the dependency tree was pruned to match in `98cd0c2`
 `47 75% 45%`, `cyber-gold-dark` `45 70% 38%`. Type is **Orbitron** for headings,
 **Inter** for body, **JetBrains Mono** for accents, all from Google Fonts.
 
-### Scaffold remnants still present — there is no database
+### There is no database
 
-The project started from a Replit `rest-express` template and the backend was
-never built out. **This site has no database and stores nothing.** It is static
-content plus outbound links.
+**This site has no database and stores nothing.** It is static content plus
+outbound links. It used to carry the disconnected Drizzle/Postgres plumbing from
+the Replit `rest-express` template; that was removed, because it implied
+persistence that did not exist and its `users` table stored passwords in plain
+text.
 
-The database plumbing is vestigial and disconnected end to end:
+What was deleted, and the evidence each piece was dead:
 
-| Piece | State |
+| Removed | Why it was safe |
 |---|---|
-| `shared/schema.ts` | Defines a Drizzle `pgTable` `users` (id, username, **plaintext `password`**) |
-| `server/storage.ts` | Imports that schema, then ignores it — `MemStorage` is an in-memory `Map` |
-| `server/routes.ts` | Imports `storage`; the only mention is a code comment. Zero routes registered |
-| `drizzle.config.ts` | The sole thing that would connect. Throws immediately without `DATABASE_URL` |
-| `migrations/` | Does not exist — `npm run db:push` has never run successfully |
-| `DATABASE_URL` | Set nowhere: no `.env` locally or on the VPS, nothing in the pm2 environment |
-| Postgres | Nothing listening on the VPS; no Neon/Postgres service configured |
+| `shared/schema.ts` | A Drizzle `pgTable` `users` (id, username, **plaintext `password`**), imported only by `server/storage.ts` |
+| `server/storage.ts` | `MemStorage`, an in-memory `Map` that ignored the schema entirely. Imported only by `routes.ts`, which never called it |
+| `drizzle.config.ts` | The sole thing that would have connected. Threw immediately without `DATABASE_URL` |
+| `drizzle-orm`, `drizzle-zod`, `drizzle-kit`, `zod`, `zod-validation-error` | Zero references once the schema went. `zod` was used *only* by that schema |
+| `npm run db:push` | `migrations/` never existed, so it had never run successfully |
+| `@shared` alias, `shared/**/*` in tsconfig | Nothing imported `@shared` except the deleted `storage.ts` |
 
-So the chain terminates before it begins: the schema feeds an in-memory store
-that no route calls, and no route exists. `drizzle-orm` and `drizzle-kit` are
-dependencies only because that unused schema imports them. The Neon serverless
-driver was already removed in `98cd0c2` — nothing referenced it.
+Corroborating that no database was ever wired up: `DATABASE_URL` was set nowhere
+(no `.env` locally or on the VPS, nothing in the pm2 environment), and no
+Postgres was listening on the VPS. The Neon serverless driver had already gone
+in `98cd0c2`.
 
-**Before wiring up any of it:** `MemStorage` keeps users in a `Map` that
-vanishes on every restart, and both it and the schema treat `password` as plain
-text. Delete this scaffold or add real persistence and hashing first — it is the
-obvious thing to reach for and the wrong thing to ship.
+`server/routes.ts` remains as the place to add `/api` routes — it registers none
+today and simply builds the HTTP server. `react-hook-form` was deliberately
+*not* removed with the rest: it is unrelated to the database, and shadcn's
+`ui/form.tsx` imports it. That component is not currently used by any page
+either, but it is part of the shadcn set and forms are a plausible next step —
+see Known Issues.
+
+**If you add persistence:** start from a real driver and hashed passwords, not
+from what was deleted. The old scaffold's `Map` emptied on every pm2 restart.
 
 ---
 
@@ -138,20 +151,19 @@ client/               Vite root
     components/       the 9 page sections + animation/Reveal + ui/ (shadcn)
     index.css         theme tokens, cyber-* utilities, keyframes
 server/
-  index.ts            Express app, static serving, error handler
-  routes.ts           empty — no API routes registered
-  storage.ts          unused in-memory scaffold
+  index.ts            Express app, static serving, the rename redirect, error handler
+  routes.ts           no API routes registered — just builds the HTTP server
   vite.ts             dev middleware + production static serving
-shared/schema.ts      unused Drizzle users table
 public/downloads/     the 8 PDFs (served by Express, NOT bundled by Vite)
 attached_assets/      images used by journey-section; also 8 unreferenced PDFs
 dist/                 build output (tracked, but regenerated on every deploy)
 deploy.sh             production deploy script
 ```
 
-Vite aliases (`vite.config.ts`): `@` → `client/src`, `@shared` → `shared`,
-`@assets` → `attached_assets`. Note `@assets` is defined but unused — components
-import images by relative path instead.
+Vite aliases (`vite.config.ts`): `@` → `client/src`, `@assets` →
+`attached_assets`. Note `@assets` is defined but unused — components import
+images by relative path instead. There is no `shared/` directory any more; the
+`@shared` alias went with the database scaffold.
 
 ---
 
@@ -183,9 +195,8 @@ so the server must be started **from the repository root** or every PDF link 404
 | `NODE_ENV` | — | `development` mounts Vite/HMR, anything else serves `dist/public` |
 | `REPL_ID` | — | When set alongside non-production `NODE_ENV`, enables the Replit cartographer plugin |
 
-There is no `.env` file in the repo. `DATABASE_URL` is referenced only by
-`drizzle.config.ts`, which throws without it — `npm run db:push` will not run
-until that is set, and nothing in the app needs a database today.
+There is no `.env` file in the repo and the app needs no environment variable to
+run — see [There is no database](#there-is-no-database).
 
 ---
 
@@ -265,16 +276,18 @@ Tracked here rather than hidden. None of these break the live site today.
   or change without notice and none are under this project's control. The built
   `index.html` also pulls fonts from Google. These are now the only external
   requests the page makes.
-- **Dead weight in `attached_assets/`:** its 8 PDFs are an *identical duplicate
-  set* of `public/downloads/` and nothing references them; `images/exchanging.png`
-  is unused (the `exchangingimg` variable in `journey-section.tsx` actually
-  imports `wmremove-transformed.png`); `cryptogold` is imported but never used;
-  and `toolkit-section.tsx` imports `Rocket` without using it. The `@assets`
-  alias is likewise defined but unused.
-- **The auth/database scaffold is a trap, not a feature.** See
-  [Scaffold remnants](#scaffold-remnants-still-present--there-is-no-database) —
-  plaintext passwords, an in-memory store that empties on restart, and no
-  database behind any of it.
+- **Dead weight still present:** `attached_assets/` holds 8 PDFs that are an
+  *identical duplicate set* of `public/downloads/` and nothing references them;
+  `images/exchanging.png` is unused (the `exchangingimg` variable in
+  `journey-section.tsx` actually imports `wmremove-transformed.png`);
+  `cryptogold` is imported but never used; `toolkit-section.tsx` imports `Rocket`
+  without using it; the `@assets` alias is defined but unused; and
+  `@hookform/resolvers` has zero imports. `ui/form.tsx` is likewise not imported
+  by any page, which makes `react-hook-form` dead too — left in place on purpose
+  as part of the shadcn set, but it is a candidate if you want the tree minimal.
+- **`express.json()` / `express.urlencoded()` parse bodies for an app with no
+  POST endpoints.** Harmless, but they are what turns scanner traffic into
+  `PayloadTooLargeError` and `SyntaxError` entries in the pm2 error log.
 - **No `LICENSE` file.** `package.json` declares MIT and this README previously
   linked `./LICENSE`, which does not exist.
 

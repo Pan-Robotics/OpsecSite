@@ -9,14 +9,23 @@ export type AccountUser = {
   plan: string; features: string[]; wallets: number;
 };
 
-export async function fetchSession(): Promise<AccountUser | null> {
-  try {
-    const r = await fetch(`${ACCOUNTS_URL}/auth/session`, { method: "POST", credentials: "include" });
-    if (!r.ok) return null;
-    return ((await r.json()) as { user: AccountUser | null }).user;
-  } catch {
-    return null;
-  }
+// The header renders the control twice (desktop and phone variants) and other
+// parts of a page may ask too: share one in-flight request for a short window.
+let inflight: Promise<AccountUser | null> | null = null;
+export function fetchSession(): Promise<AccountUser | null> {
+  if (inflight) return inflight;
+  inflight = (async () => {
+    try {
+      const r = await fetch(`${ACCOUNTS_URL}/auth/session`, { method: "POST", credentials: "include" });
+      if (!r.ok) return null;
+      return ((await r.json()) as { user: AccountUser | null }).user;
+    } catch {
+      return null;
+    } finally {
+      setTimeout(() => { inflight = null; }, 2000);
+    }
+  })();
+  return inflight;
 }
 
 export async function signOut(): Promise<void> {

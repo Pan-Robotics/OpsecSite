@@ -62,7 +62,7 @@ export default function ToolkitSection() {
               </div>
               <ul className="text-sm text-gray-300 space-y-2">
                 <li>• <a href="https://www.qubes-os.org" target="_blank" rel="noopener noreferrer" className="text-cyber-gold hover:text-cyber-gold-dark transition-colors">Qubes OS</a></li>
-                <li>• <a href="https://tails.boum.org" target="_blank" rel="noopener noreferrer" className="text-cyber-gold hover:text-cyber-gold-dark transition-colors">Tails</a></li>
+                <li>• <a href="https://tails.net" target="_blank" rel="noopener noreferrer" className="text-cyber-gold hover:text-cyber-gold-dark transition-colors">Tails</a></li>
                 <li>• <a href="https://grapheneos.org" target="_blank" rel="noopener noreferrer" className="text-cyber-gold hover:text-cyber-gold-dark transition-colors">GrapheneOS</a> (Mobile)</li>
               </ul>
             </div>

@@ -1,179 +1,87 @@
-import { SiX, SiTelegram } from "react-icons/si";
-import { Button } from "@/components/ui/button";
-import { Reveal } from "@/components/animation/Reveal";
+import { SiGithub, SiTelegram, SiX } from "react-icons/si";
+import { APPS, APPS_URL, ACCOUNTS_URL } from "@/lib/apps";
+import { GUIDES, guideHref } from "@/lib/guides";
 
+const SECTIONS: [string, string][] = [
+  ["foundations", "Foundations"],
+  ["journey", "Security Journey"],
+  ["toolkit", "Toolkit"],
+  ["tools", "Apps"],
+  ["resources", "Guides"],
+];
+
+const DEVELOPERS: [string, string][] = [
+  ["Alexander Dada", "https://github.com/alexdada555"],
+  ["Sylvia Yousif", "https://github.com/sylvia5555"],
+  ["Aiman Jamil", "https://github.com/ai-28"],
+];
+
+const colTitle = "mb-3 text-sm font-semibold uppercase tracking-wide text-cyber-steel";
+const link = "text-gray-300 transition-colors duration-200 hover:text-cyber-gold";
 
 export default function Footer() {
-
-  const scrollToSection = (sectionId: string) => {
-    document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" })
-  }
-
-
+  const year = new Date().getFullYear();
   return (
-    <Reveal>
-      <footer className="bg-cyber-dark border-t border-cyber-gold/20 py-12">
-        <div className="max-w-6xl mx-auto px-3 sm:px-6 lg:px-8">
-          <div className="md:col-span-2 mb-8">
-            <div className="flex flex-col items-start">
-              <p className="font-orbitron text-xl font-bold text-cyber-gold">CryptoOpsec</p>
-              <p className="text-gray-400 mb-4 max-w-md">
-                Empowering crypto users with practical operational security knowledge.
-                Your financial sovereignty depends on your security practices.
-              </p>
-              <div className="flex space-x-4">
-                <a href="https://x.com/cryptoopseccom" target="_blank" rel="noopener noreferrer">
-                  <SiX className="w-6 h-6 text-cyber-steel hover:text-cyber-gold cursor-pointer transition-colors" />
-                </a>
-                <a href="https://t.me/cryptoopseccom" target="_blank" rel="noopener noreferrer">
-                  <SiTelegram className="w-6 h-6 text-cyber-steel hover:text-cyber-gold cursor-pointer transition-colors" />
-                </a>
-              </div>
-            </div>
-
-          </div>
-          <div className="grid gap-8 grid-cols-[repeat(auto-fit,minmax(150px,1fr))]">
-
-            <div>
-              <p className="text-gray-400 mb-4 max-w-md text-lg">Resources</p>
-              <div className="flex flex flex-col items-start gapy-8 text-start">
-                <button
-                  className="text-start text-gray-300 hover:text-cyber-gold transition-colors duration-200"
-                >
-                  <a href="/downloads/CryptoOPSEC_Crypto_Fundamentals_Guide.pdf" download>
-                    Core Concepts Guide
-                  </a>
-                </button>
-                <button
-                  className="text-start text-gray-300 hover:text-cyber-gold transition-colors duration-200"
-                >
-                  <a href="/downloads/CryptoOPSEC_Crypto_Security_Checklist.pdf" download>
-                    Security Checklist
-                  </a>
-                </button>
-                <button
-                  className="text-start text-gray-300 hover:text-cyber-gold transition-colors duration-200"
-                >
-                  <a href="/downloads/CryptoOPSEC_Crypto_Exchange_Security_Checklist.pdf" download>
-                    Exchange Audit Checklist
-                  </a>
-                </button>
-                <button
-                  className="text-start text-gray-300 hover:text-cyber-gold transition-colors duration-200"
-                >
-                  <a href="/downloads/CryptoOPSEC_Hot_Wallet_Guide.pdf" download>
-                    Hot Wallet Setup Guide
-                  </a>
-                </button>
-                <button
-                  className="text-start text-gray-300 hover:text-cyber-gold transition-colors duration-200"
-                >
-                  <a href="/downloads/CryptoOPSEC_Cold_Wallet_Guide.pdf" download>
-                    Cold Storage Setup Guide
-                  </a>
-                </button>
-                <button
-                  className="text-start text-gray-300 hover:text-cyber-gold transition-colors duration-200"
-                >
-                  <a href="/downloads/CryptoOPSEC_Crypto_Scam_Cheat_Sheet.pdf" download>
-                    Scam Cheat Sheet
-                  </a>
-                </button>
-                <button
-                  className="text-start text-gray-300 hover:text-cyber-gold transition-colors duration-200"
-                >
-                  <a href="/downloads/CryptoOPSEC_50_Point_Security_Checklist.pdf" download>
-                    CryptoOPSEC Security
-                  </a>
-                </button>
-                <button
-                  className="text-start text-gray-300 hover:text-cyber-gold transition-colors duration-200"
-                >
-                  <a href="/downloads/CryptoOPSEC_Scam_Detection_Guide.pdf" download>
-                    Threat Detection Guide
-                  </a>
-                </button>
-
-              </div>
-            </div>
-            <div>
-              <p className="text-gray-400 mb-4 max-w-md text-lg">Sections</p>
-              {/* Desktop Navigation */}
-
-              <div className="flex flex flex-col items-start gapy-8">
-                <button
-                  onClick={() => scrollToSection('foundations')}
-                  className="text-gray-300 hover:text-cyber-gold transition-colors duration-200"
-                >
-                  Foundations
-                </button>
-                <button
-                  onClick={() => scrollToSection('journey')}
-                  className="text-gray-300 hover:text-cyber-gold transition-colors duration-200"
-                >
-                  Security Journey
-                </button>
-                <button
-                  onClick={() => scrollToSection('toolkit')}
-                  className="text-gray-300 hover:text-cyber-gold transition-colors duration-200"
-                >
-                  Toolkit
-                </button>
-                <button
-                  onClick={() => scrollToSection('tools')}
-                  className="text-gray-300 hover:text-cyber-gold transition-colors duration-200"
-                >
-                  Tools
-                </button>
-                <button
-                  onClick={() => scrollToSection('resources')}
-                  className="text-gray-300 hover:text-cyber-gold transition-colors duration-200"
-                >
-                  Resources
-                </button>
-
-              </div>
-            </div>
-
-
-            <div>
-              <p className="text-gray-400 mb-4 max-w-md text-lg">Developers</p>
-              <div className="flex flex flex-col items-start gapy-8 text-start">
-                <button
-                  className="text-start text-gray-300 hover:text-cyber-gold transition-colors duration-200"
-                >
-                  <a href="https://github.com/alexdada555" download>
-                    Alexander Dada
-                  </a>
-                </button>
-                <button
-                  className="text-start text-gray-300 hover:text-cyber-gold transition-colors duration-200"
-                >
-                  <a href="https://github.com/sylvia5555" download>
-                    Sylvia Yousif
-                  </a>
-                </button>
-                <button
-                  className="text-start text-gray-300 hover:text-cyber-gold transition-colors duration-200"
-                >
-                  <a href="https://github.com/ai-28" download>
-                    Aiman Jamil
-                  </a>
-                </button>
-              </div>
-
-
-            </div>
-
-          </div>
-          <div className="border-t border-cyber-steel mt-8 pt-8 text-center">
-            <p className="text-gray-400">
-              © 2025 CryptoOpsec.com. Educational content only. Not financial advice.
-              <span className="text-cyber-gold"> Stay safe out there.</span>
+    <footer className="border-t border-cyber-gold/20 bg-cyber-dark py-12">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div className="max-w-md">
+            <p className="font-orbitron text-xl font-bold text-cyber-gold">CryptoOpsec</p>
+            <p className="mt-2 text-gray-400">
+              Practical operational security for people who hold their own keys. Guides, checklists and
+              self-custody tools, free and open.
             </p>
           </div>
+          <div className="flex items-center gap-4">
+            <a href="https://x.com/cryptoopseccom" target="_blank" rel="noopener noreferrer" aria-label="CryptoOpsec on X" className="text-cyber-steel transition-colors hover:text-cyber-gold"><SiX className="h-6 w-6" /></a>
+            <a href="https://t.me/cryptoopseccom" target="_blank" rel="noopener noreferrer" aria-label="CryptoOpsec on Telegram" className="text-cyber-steel transition-colors hover:text-cyber-gold"><SiTelegram className="h-6 w-6" /></a>
+            <a href="https://github.com/Pan-Robotics" target="_blank" rel="noopener noreferrer" aria-label="CryptoOpsec on GitHub" className="text-cyber-steel transition-colors hover:text-cyber-gold"><SiGithub className="h-6 w-6" /></a>
+          </div>
         </div>
-      </footer>
-    </Reveal>
+
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+          <div className="col-span-2 md:col-span-1">
+            <p className={colTitle}>Guides</p>
+            <ul className="space-y-2 text-sm">
+              {GUIDES.map((g) => (
+                <li key={g.file}><a href={guideHref(g)} download className={link}>{g.title}</a></li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <p className={colTitle}>Sections</p>
+            <ul className="space-y-2 text-sm">
+              {SECTIONS.map(([id, label]) => (
+                <li key={id}><a href={`/#${id}`} className={link}>{label}</a></li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <p className={colTitle}>Apps</p>
+            <ul className="space-y-2 text-sm">
+              <li><a href={APPS_URL} className={link}>App Launcher</a></li>
+              {APPS.filter((a) => a.status === "live" && a.url).map((a) => (
+                <li key={a.id}><a href={a.url} className={link}>{a.name}</a></li>
+              ))}
+              <li><a href={`${ACCOUNTS_URL}/login`} className={link}>Sign in with wallet</a></li>
+              <li><a href={`${ACCOUNTS_URL}/account`} className={link}>Your account</a></li>
+            </ul>
+          </div>
+          <div>
+            <p className={colTitle}>Developers</p>
+            <ul className="space-y-2 text-sm">
+              {DEVELOPERS.map(([name, url]) => (
+                <li key={url}><a href={url} target="_blank" rel="noopener noreferrer" className={link}>{name}</a></li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div className="mt-10 border-t border-cyber-gray pt-6 text-center text-sm text-gray-400">
+          &copy; {year} CryptoOpsec.com. Educational content only, not financial advice.
+          <span className="text-cyber-gold"> Stay safe out there.</span>
+        </div>
+      </div>
+    </footer>
   );
 }

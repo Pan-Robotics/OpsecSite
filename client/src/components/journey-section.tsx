@@ -1,9 +1,7 @@
-import { AlertCircle, X, Check, Download, List, Lightbulb, Shield } from "lucide-react";
+import { AlertCircle, X, Check, Download, Lightbulb, Shield, MailWarning, MessageSquareWarning, Globe, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import cryptogold from '../../../attached_assets/images/—Pngtree—gold bitcoin cryptocurrency coin 3d_16672635.png';
 import exchangingimg from '../../../attached_assets/images/wmremove-transformed.png'
 import wallet from '../../../attached_assets/images/wallet.png'
-import { motion } from "motion/react"
 import bitcoin from '../../../attached_assets/images/bitcoin.png'
 import { Reveal } from "@/components/animation/Reveal";
 
@@ -23,14 +21,10 @@ export default function JourneySection() {
           <div className="mb-16">
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div>
-                {/* <img
-                src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
-                alt="Computer security warning and digital threat protection"
-                className="rounded-xl shadow-2xl w-full h-auto border border-red-500/20"
-              /> */}
                 <img
                   src={exchangingimg}
-                  alt="Computer security warning and digital threat protection"
+                  loading="lazy"
+                  alt="Coins leaving an exchange: custody you do not control"
                   className="w-[80%] mx-auto"
                 />
 
@@ -67,7 +61,7 @@ export default function JourneySection() {
                   </li>
                 </ul>
 
-                <Button asChild className="mt-6 bg-cyber-gold hover:bg-cyber-gold-dark text-cyber-dark font-semibold shadow-none">
+                <Button asChild className="mt-6 h-auto max-w-full whitespace-normal py-3 bg-cyber-gold hover:bg-cyber-gold-dark text-cyber-dark font-semibold shadow-none">
                   <a href="/downloads/CryptoOPSEC_Crypto_Exchange_Security_Checklist.pdf" download>
                     <Download className="w-4 h-4 mr-2" />
                     Download Exchange Audit Checklist
@@ -118,7 +112,7 @@ export default function JourneySection() {
                   </div>
                 </div>
 
-                <Button asChild className="bg-cyber-gold hover:bg-cyber-gold-dark text-cyber-dark font-semibold shadow-none">
+                <Button asChild className="h-auto max-w-full whitespace-normal py-3 bg-cyber-gold hover:bg-cyber-gold-dark text-cyber-dark font-semibold shadow-none">
                   <a href="/downloads/CryptoOPSEC_Hot_Wallet_Guide.pdf" download>
                     <Download className="w-4 h-4 mr-2" />
                     Download Hot Wallet Setup Guide
@@ -126,13 +120,7 @@ export default function JourneySection() {
                 </Button>
               </div>
               <div className="order-1 md:order-2">
-                {/* <img
-                src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
-                alt="Cryptocurrency wallet interface and mobile security setup"
-                className="rounded-xl shadow-2xl w-full h-auto border border-cyber-gold/20"
-              /> */}
-                {/* <img src="https://mkt-site-asset.crypto.com/assets/home-page/defi.webp" alt="iPhone showing Defi Earn page of the Crypto.com App" loading="lazy" className="w-full" /> */}
-                <img src={wallet} alt="iPhone showing Defi Earn page of the Crypto.com App" loading="lazy" className="w-full" />
+                <img src={wallet} alt="A phone with a mobile wallet app open" loading="lazy" className="w-full" />
 
               </div>
             </div>
@@ -144,7 +132,8 @@ export default function JourneySection() {
               <div>
                 <img
                   src={bitcoin}
-                  alt="Hardware cryptocurrency wallet device for cold storage security"
+                  loading="lazy"
+                  alt="Bitcoin coins kept offline"
                   className="w-[90%] mx-auto"
                 />
 
@@ -196,7 +185,7 @@ export default function JourneySection() {
                   </div>
                 </div>
 
-                <Button asChild className="bg-cyber-gold hover:bg-cyber-gold-dark text-cyber-dark font-semibold shadow-none">
+                <Button asChild className="h-auto max-w-full whitespace-normal py-3 bg-cyber-gold hover:bg-cyber-gold-dark text-cyber-dark font-semibold shadow-none">
                   <a href="/downloads/CryptoOPSEC_Cold_Wallet_Guide.pdf" download>
                     <Download className="w-4 h-4 mr-2" />
                     Download Cold Storage Setup Guide
@@ -214,7 +203,7 @@ export default function JourneySection() {
               <div className="order-2 md:order-1">
                 <div className="flex items-center mb-6">
                   <div className="bg-red-500 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold mr-4">4</div>
-                  <h3 className="font-orbitron text-2xl font-bold text-white">Detect Scams & Social Engineering</h3>
+                  <h3 className="font-orbitron text-2xl font-bold text-white">Detect Scams and Social Engineering</h3>
                 </div>
 
                 <p className="text-red-400 text-lg font-semibold mb-4">Don't trust links. Trust yourself.</p>
@@ -259,7 +248,7 @@ export default function JourneySection() {
                   </div>
                 </div>
 
-                <Button asChild className="bg-cyber-gold hover:bg-cyber-gold-dark text-cyber-dark font-semibold shadow-none">
+                <Button asChild className="h-auto max-w-full whitespace-normal py-3 bg-cyber-gold hover:bg-cyber-gold-dark text-cyber-dark font-semibold shadow-none">
                   <a href="/downloads/CryptoOPSEC_Crypto_Scam_Cheat_Sheet.pdf" download>
                     <Download className="w-4 h-4 mr-2" />
                     Download Scam Cheat Sheet
@@ -267,7 +256,24 @@ export default function JourneySection() {
                 </Button>
               </div>
               <div className="order-1 md:order-2">
-                <img src="https://cdni.iconscout.com/illustration/premium/thumb/man-doing-crypto-scam-illustration-svg-download-png-12141714.png" alt="Cybersecurity shield protecting against digital threats and fraud" className="w-[80%] mx-auto" />
+                {/* Threat radar: the four channels scams arrive through, drawn in-house instead of a hotlinked stock image. */}
+                <div className="mx-auto grid w-[90%] max-w-sm grid-cols-2 gap-3" aria-hidden="true">
+                  {[
+                    [MailWarning, "Email", "fake alerts"],
+                    [MessageSquareWarning, "DMs", "fake support"],
+                    [Globe, "Sites", "copycat dapps"],
+                    [ShieldAlert, "Approvals", "drainer prompts"],
+                  ].map(([Icon, title, sub]) => {
+                    const I = Icon as typeof MailWarning;
+                    return (
+                      <div key={title as string} className="rounded-xl border border-red-500/30 bg-red-500/10 p-5 text-center">
+                        <I className="mx-auto mb-2 h-9 w-9 text-red-400" />
+                        <div className="text-sm font-semibold text-white">{title as string}</div>
+                        <div className="text-xs text-red-300">{sub as string}</div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>

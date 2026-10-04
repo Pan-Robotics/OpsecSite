@@ -13,7 +13,6 @@ export const Reveal = ({ children, width = "100%" }: Props) => {
     useEffect(() => {
         if (isInView) {
             mainControls.start("visible");
-            console.log("In view");
         }
     }, [isInView]);
     return (

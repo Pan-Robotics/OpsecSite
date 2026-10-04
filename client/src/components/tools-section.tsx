@@ -1,92 +1,77 @@
-import { Button } from "@/components/ui/button";
+import { ExternalLink, Wallet } from "lucide-react";
 import { Reveal } from "@/components/animation/Reveal";
+import { ACCOUNTS_URL, APPS, APPS_URL, type AppDef } from "@/lib/apps";
 
-// DYOR app URL — override with VITE_DYOR_URL at build time if the subdomain changes.
-const DYOR_URL = import.meta.env.VITE_DYOR_URL ?? "https://dyor.cryptoopsec.com";
+function StatusPill({ status }: { status: AppDef["status"] }) {
+  return status === "live" ? (
+    <span className="whitespace-nowrap rounded-full border border-green-500/30 bg-green-500/15 px-2 py-0.5 text-[10px] font-semibold text-green-400">LIVE</span>
+  ) : (
+    <span className="whitespace-nowrap rounded-full border border-cyber-gold/10 bg-cyber-gray/60 px-2 py-0.5 text-[10px] font-semibold text-cyber-steel">SOON</span>
+  );
+}
 
-const DYOR_FEATURES = [
-  "Asset-class-aware scoring",
-  "A–D conviction tiers",
-  "Token screener",
-  "Portfolio & barbell tools",
-  "Agent-callable (MCP)",
-];
+function ToolCard({ app }: { app: AppDef }) {
+  const Icon = app.icon;
+  const live = app.status === "live";
+  return (
+    <div className={`flex flex-col rounded-2xl border p-6 backdrop-blur-md ${live ? "border-cyber-gold/30 bg-cyber-slate/80" : "border-cyber-gold/10 bg-cyber-slate/40"}`}>
+      <div className="mb-3 flex items-center gap-3">
+        <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-lg ${live ? "bg-cyber-gold text-cyber-dark" : "bg-cyber-gray/60 text-cyber-steel"}`}>
+          <Icon className="h-5 w-5" />
+        </span>
+        <div className="min-w-0">
+          <h3 className="font-orbitron text-xl font-bold leading-tight text-white">{app.name}</h3>
+          <p className="text-xs text-gray-400">{app.tagline}</p>
+        </div>
+        <span className="ml-auto"><StatusPill status={app.status} /></span>
+      </div>
+      <p className="mb-4 flex-1 text-sm text-gray-300">{app.description}</p>
+      <div className="mb-5 flex flex-wrap gap-2">
+        {app.features.map((f) => (
+          <span key={f} className="rounded-full border border-cyber-gold/10 bg-cyber-gray/60 px-2 py-1 text-xs text-cyber-steel">{f}</span>
+        ))}
+      </div>
+      {live && app.url ? (
+        <a href={app.url} className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-cyber-gold px-4 text-sm font-semibold text-cyber-dark transition-colors hover:bg-cyber-gold-dark">
+          Launch {app.name} <ExternalLink className="h-4 w-4" aria-hidden />
+        </a>
+      ) : (
+        <span className="inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-cyber-gray/60 text-sm font-semibold text-cyber-steel">Coming soon</span>
+      )}
+    </div>
+  );
+}
 
 export default function ToolsSection() {
   return (
     <Reveal>
-      <section
-        id="tools"
-        className="relative py-20 flex flex-col justify-start items-center p-4 overflow-x-hidden min-h-[480px] m-0 bg-[url('https://mkt-site-asset.crypto.com/assets/home-page/bento-layout/win-btc-mobile-v2.webp')] bg-center bg-cover bg-no-repeat box-border"
-      >
-        <div className="absolute inset-0 bg-black/60" />
-        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-          <div className="text-center mb-12">
-            <h2 className="font-orbitron text-3xl md:text-4xl font-bold mb-6 text-cyber-gold">
-              CryptoOpsec Tools
-            </h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Self-custody-friendly security and research tools. The first is live now.
+      <section id="tools" className="relative overflow-hidden bg-cyber-dark py-20">
+        <div className="pointer-events-none absolute inset-0 cyber-grid opacity-40" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-cyber-gold/10 to-transparent" />
+        <div className="relative mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-12 text-center">
+            <h2 className="mb-6 font-orbitron text-3xl font-bold text-cyber-gold md:text-4xl">CryptoOpsec Apps</h2>
+            <p className="mx-auto max-w-3xl text-xl text-gray-300">
+              Self-custody-friendly security and research tools. Free to use, open data, one wallet sign-in across all of them.
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 max-w-4xl mx-auto">
-            {/* DYOR — live */}
-            <div className="rounded-2xl border border-cyber-gold/30 bg-cyber-slate/80 backdrop-blur-md p-6 flex flex-col">
-              <div className="flex items-center gap-3 mb-3">
-                <span className="grid h-10 w-10 place-items-center rounded-lg bg-cyber-gold text-cyber-dark text-xl">
-                  🧭
-                </span>
-                <div>
-                  <h3 className="font-orbitron text-xl font-bold text-white leading-tight">DYOR</h3>
-                  <p className="text-xs text-gray-400">Do Your Own Research</p>
-                </div>
-                <span className="ml-auto text-xs font-semibold px-2 py-1 rounded-full bg-green-500/15 text-green-400 border border-green-500/30">
-                  ● LIVE
-                </span>
-              </div>
-              <p className="text-sm text-gray-300 mb-4">
-                A crypto-token qualification engine — resolves any token cross-chain and scores it on
-                fundamentals, tokenomics, on-chain, social, and dev activity, judged against its own
-                asset class. Opinionated A–D tiers with hard disqualifier gates. Research aid, not advice.
-              </p>
-              <div className="flex flex-wrap gap-2 mb-5">
-                {DYOR_FEATURES.map((f) => (
-                  <span
-                    key={f}
-                    className="text-xs px-2 py-1 rounded-full bg-cyber-gray/60 text-cyber-steel border border-cyber-gold/10"
-                  >
-                    {f}
-                  </span>
-                ))}
-              </div>
-              <Button
-                asChild
-                className="mt-auto w-full bg-cyber-gold hover:bg-cyber-gold-dark text-cyber-dark font-semibold shadow-none"
-              >
-                <a href={DYOR_URL} target="_blank" rel="noopener noreferrer">
-                  Launch DYOR →
-                </a>
-              </Button>
-            </div>
-
-            {/* Next tool — placeholder */}
-            <div className="rounded-2xl border border-cyber-gold/10 bg-cyber-slate/40 backdrop-blur-md p-6 flex flex-col items-center justify-center text-center">
-              <span className="grid h-10 w-10 place-items-center rounded-lg bg-cyber-gray/60 text-cyber-steel text-xl mb-3">
-                🛡️
-              </span>
-              <h3 className="font-orbitron text-lg font-bold text-gray-300 mb-1">OpsecViz</h3>
-              <p className="text-sm text-gray-500 mb-4">
-                Multi-chain portfolio analytics &amp; reporting.
-              </p>
-              <span className="text-xs font-semibold px-3 py-1 rounded-full bg-cyber-gray/60 text-cyber-steel border border-cyber-gold/10">
-                Coming soon
-              </span>
-            </div>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {APPS.map((app) => <ToolCard key={app.id} app={app} />)}
           </div>
 
-          <p className="text-center text-sm text-gray-400 mt-8">
-            More tools on the way — join our Telegram for early access.
+          <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <a href={APPS_URL} className="inline-flex min-h-11 items-center justify-center rounded-lg border-2 border-cyber-gold px-6 text-sm font-semibold text-cyber-gold transition-colors hover:bg-cyber-gold hover:text-cyber-dark">
+              Open the App Launcher
+            </a>
+            <a href={`${ACCOUNTS_URL}/login`} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-cyber-gold/30 px-6 text-sm font-semibold text-gray-200 transition-colors hover:border-cyber-gold hover:text-cyber-gold">
+              <Wallet className="h-4 w-4" aria-hidden /> Sign in with a wallet
+            </a>
+          </div>
+          <p className="mt-6 text-center text-sm text-gray-400">
+            One account for every app, no password and no email: an Ethereum or Solana wallet signs a message, nothing more.{" "}
+            More tools are on the way;{" "}
+            <a href="https://t.me/cryptoopseccom" target="_blank" rel="noopener noreferrer" className="text-cyber-gold hover:underline">join the Telegram</a> for early access.
           </p>
         </div>
       </section>

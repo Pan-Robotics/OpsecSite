@@ -1,0 +1,13 @@
+{
+  "name": "CryptoOpsec",
+  "short_name": "CryptoOpsec",
+  "description": "Practical operational security for self-custody, with free guides and research tools.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#050f19",
+  "theme_color": "#050f19",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

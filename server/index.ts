@@ -58,7 +58,7 @@ app.use((req, res, next) => {
   // Loopback only: nginx terminates TLS on 80/443 and proxies here, and ufw
   // denies inbound on everything except 22/80/443. Binding 0.0.0.0 would not
   // expose the port, but it would bypass nginx if the firewall ever changed.
-  const port = 3000;
+  const port = Number(process.env.PORT) || 3000;   // PORT lets a staging copy run beside the live one
 
   server.listen(port, '127.0.0.1', () => {
     console.log(`✅ Server running on http://127.0.0.1:${port}`);

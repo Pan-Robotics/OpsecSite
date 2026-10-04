@@ -1,7 +1,7 @@
 import { FileText, Shield, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Reveal } from "@/components/animation/Reveal";
+import { GUIDES, guideHref } from "@/lib/guides";
 
 
 export default function ResourcesSection() {
@@ -17,7 +17,7 @@ export default function ResourcesSection() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
-            <div className="bg-cyber-dark p-8 rounded-xl border border-cyber-gold/20 shadow-none">
+            <div className="bg-cyber-dark p-5 sm:p-8 rounded-xl border border-cyber-gold/20 shadow-none">
               <div className="flex items-center mb-6">
                 <FileText className="text-cyber-gold w-8 h-8 mr-4" />
                 <div>
@@ -29,7 +29,7 @@ export default function ResourcesSection() {
                 Step-by-step security audit checklist covering exchanges, wallets,
                 operational security, and emergency procedures.
               </p>
-              <Button asChild className="w-full bg-cyber-gold hover:bg-cyber-gold-dark text-cyber-dark font-semibold shadow-none">
+              <Button asChild className="h-auto w-full whitespace-normal py-3 bg-cyber-gold hover:bg-cyber-gold-dark text-cyber-dark font-semibold shadow-none">
                 <a href="/downloads/CryptoOPSEC_50_Point_Security_Checklist.pdf" download>
                   <Download className="w-4 h-4 mr-2" />
                   Download PDF (38 KB)
@@ -37,7 +37,7 @@ export default function ResourcesSection() {
               </Button>
             </div>
 
-            <div className="bg-cyber-dark p-8 rounded-xl border border-cyber-gold/20 shadow-none">
+            <div className="bg-cyber-dark p-5 sm:p-8 rounded-xl border border-cyber-gold/20 shadow-none">
               <div className="flex items-center mb-6">
                 <Shield className="text-cyber-gold w-8 h-8 mr-4" />
                 <div>
@@ -49,13 +49,30 @@ export default function ResourcesSection() {
                 Real examples of phishing attempts, social engineering tactics,
                 and red flags to watch for in the crypto space.
               </p>
-              <Button asChild className="w-full bg-cyber-gold hover:bg-cyber-gold-dark text-cyber-dark font-semibold shadow-none">
+              <Button asChild className="h-auto w-full whitespace-normal py-3 bg-cyber-gold hover:bg-cyber-gold-dark text-cyber-dark font-semibold shadow-none">
                 <a href="/downloads/CryptoOPSEC_Scam_Detection_Guide.pdf" download>
                   <Download className="w-4 h-4 mr-2" />
                   Download Threat Detection Guide (47 KB)
                 </a>
               </Button>
             </div>
+          </div>
+
+          {/* Every guide, in reading order */}
+          <div className="mt-12">
+            <h3 className="mb-4 font-orbitron text-xl font-bold text-white">The full guide library</h3>
+            <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {GUIDES.map((g) => (
+                <li key={g.file}>
+                  <a href={guideHref(g)} download className="flex h-full flex-col rounded-lg border border-cyber-gold/20 bg-cyber-dark p-4 transition-colors hover:border-cyber-gold/50">
+                    <span className="text-xs uppercase tracking-wide text-cyber-steel">{g.step ?? "Reference"}</span>
+                    <span className="mt-1 font-semibold text-white">{g.title}</span>
+                    <span className="mt-1 flex-1 text-sm text-gray-400">{g.blurb}</span>
+                    <span className="mt-3 inline-flex items-center gap-1 text-sm text-cyber-gold"><Download className="h-4 w-4" aria-hidden /> PDF, {g.kb} KB</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
 
           {/* Follow on X */}
@@ -66,7 +83,7 @@ export default function ResourcesSection() {
                 Get the latest security alerts, tool recommendations, and threat intelligence
                 by following us on X (formerly Twitter).
               </p>
-              <div className="flex justify-center space-x-4">
+              <div className="flex flex-wrap justify-center gap-4">
                 <Button asChild className="bg-cyber-gold hover:bg-cyber-gold-dark text-cyber-dark font-semibold shadow-none px-8 py-3">
                   <a href="https://x.com/cryptoopseccom" target="_blank" rel="noopener noreferrer">
                     Follow on X

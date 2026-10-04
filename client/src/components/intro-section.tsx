@@ -22,8 +22,11 @@ export default function IntroSection() {
             </div>
             <div className="text-center">
               <img
-                src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
-                alt="Digital security and blockchain network visualization"
+                src="/img/intro-security.jpg"
+                width={1200}
+                height={800}
+                loading="lazy"
+                alt="Close-up of a circuit board lit in blue, standing in for the systems that keep keys safe"
                 className="rounded-xl shadow-2xl w-full h-auto border border-cyber-gold/20"
               />
             </div>

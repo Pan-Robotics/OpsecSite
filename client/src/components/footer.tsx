@@ -78,7 +78,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-10 border-t border-cyber-gray pt-6 text-center text-sm text-gray-400">
-          &copy; {year} CryptoOpsec.com. Educational content only, not financial advice.
+          &copy; {year} CryptoOpsec.com. Educational content only, not financial advice. Usage is counted anonymously, without cookies; Global Privacy Control is respected.
           <span className="text-cyber-gold"> Stay safe out there.</span>
         </div>
       </div>

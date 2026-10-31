@@ -7,6 +7,7 @@ import Home from "@/pages/home";
 import Apps from "@/pages/apps";
 import NotFound from "@/pages/not-found";
 import { Reveal } from "@/components/animation/Reveal";
+import { useAnalytics } from "@/lib/analytics";
 
 // When served from the apps.* subdomain (apps.cryptoopsec.com), the launcher IS
 // the home page; on the main domain it lives at /apps.
@@ -15,6 +16,7 @@ const isAppsHost =
   window.location.hostname.toLowerCase().startsWith("apps.");
 
 function Router() {
+  useAnalytics();
   return (
     <Switch>
       <Route path="/" component={isAppsHost ? Apps : Home} />
